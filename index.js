@@ -11,6 +11,7 @@ const usersRouter = require('./controllers/users')
 
 const notFound = require('./middleware/notFound')
 const handleErrors = require('./middleware/handleErrors')
+const loginRouter = require('./controllers/login')
 
 
 const app = express()
@@ -21,8 +22,10 @@ app.use(logger)
 
 app.use(cors())
 
+app.use('/api/login', loginRouter)
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
+
 
 app.use(notFound)
 app.use(handleErrors)

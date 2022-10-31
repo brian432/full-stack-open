@@ -1,8 +1,9 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkJyaWFuMTIzIiwiaWQiOiI2MzVhYjdhZTE5OGFiODI3NDEyNDdjYjciLCJpYXQiOjE2NjY5OTYwMTd9.wGvy4p7pqgCUAFP881mQ6nE_geJOZPJ378g0sXTYBYo
 
 {
-    "content":"Buenos dias",
+    "content":"dwwwwwwwwwww",
     "important":true,
     "userId": "635ab7ae198ab82741247cb7"
 }
