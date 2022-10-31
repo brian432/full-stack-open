@@ -15,6 +15,7 @@ loginRouter.post('/', async (request, response) => {
 
     if (!(user && passwordCorrect)) {
         return response.status(401).json({
+            status_code: 401,
             error: 'invalid username or password'
         })
     }
@@ -28,7 +29,14 @@ loginRouter.post('/', async (request, response) => {
 
     response
         .status(200)
-        .send({ token, username: user.username, name: user.name })
+        .send({
+            status_code: 200,
+            user: {
+                token,
+                username: user.username,
+                name: user.name
+            }
+        })
 })
 
 module.exports = loginRouter
