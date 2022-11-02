@@ -4,11 +4,6 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 const getTokenFrom = require('../utils/get_token')
 
-notesRouter.get('/', async (req, res) => {
-    const notes = await Note.find({}).populate('user', { username: 1, name: 1 })
-    res.json(notes)
-})
-
 notesRouter.get('/:id', async (request, response) => {
     const { id } = request.params
     try {
@@ -22,15 +17,59 @@ notesRouter.get('/:id', async (request, response) => {
 
 })
 notesRouter.delete('/:id', async (request, response, next) => {
+    let token = getTokenFrom(request)
+
+    let decodedToken = {}
+    try {
+        decodedToken = jwt.verify(token, process.env.SECRET)
+    } catch (e) {
+        console.log(e)
+    }
+
+    if (!token || !decodedToken.id) {
+        return response.status(401).json({
+            status_code: 401,
+            error: 'token missing or invalid'
+        })
+    }
+
     const { id } = request.params
     try {
-        await Note.findByIdAndDelete(id)
-        response.status(204).end()
+        const noteDelete = await Note.findByIdAndRemove(id)
+        console.log(noteDelete)
+        response.json({
+            status_code: 200,
+            note: noteDelete
+        })
     } catch (err) {
         next(err)
     }
 })
 
+notesRouter.get('/', async (request, response) => {
+    let token = getTokenFrom(request)
+
+    let decodedToken = {}
+    try {
+        decodedToken = jwt.verify(token, process.env.SECRET)
+    } catch (e) {
+        console.log(e)
+    }
+
+    if (!token || !decodedToken.id) {
+        return response.status(401).json({
+            status_code: 401,
+            error: 'token missing or invalid'
+        })
+    }
+
+    const user = await User.findById(decodedToken.id).populate('notes', { content: 1, date: 1, id: 1, important: 1 })
+
+    response.status(200).json({
+        status_code: 200,
+        notes: user.notes
+    })
+})
 
 notesRouter.post('/', async (request, response, next) => {
     const { content, important = false } = request.body
@@ -38,14 +77,15 @@ notesRouter.post('/', async (request, response, next) => {
     let token = getTokenFrom(request)
 
     let decodedToken = {}
-    try{
+    try {
         decodedToken = jwt.verify(token, process.env.SECRET)
-    }catch(e){
+    } catch (e) {
         console.log(e)
     }
 
     if (!token || !decodedToken.id) {
         return response.status(401).json({
+            status_code: 401,
             error: 'token missing or invalid'
         })
     }
@@ -54,6 +94,7 @@ notesRouter.post('/', async (request, response, next) => {
 
     if (!content) {
         return response.status(400).json({
+            status_code: 400,
             error: "content not found"
         })
     }
@@ -68,14 +109,33 @@ notesRouter.post('/', async (request, response, next) => {
         const savedNote = await newNote.save()
         user.notes = user.notes.concat(savedNote._id)
         await user.save()
-        response.json(newNote)
+        response.status(201).json({
+            status_code: 201,
+            note: newNote
+        })
     } catch (err) {
         console.log('post failure', err);
         next(err)
     }
 })
 
-notesRouter.put('/:id', (request, response, next) => {
+notesRouter.put('/:id', async (request, response, next) => {
+    let token = getTokenFrom(request)
+
+    let decodedToken = {}
+    try {
+        decodedToken = jwt.verify(token, process.env.SECRET)
+    } catch (e) {
+        console.log(e)
+    }
+
+    if (!token || !decodedToken.id) {
+        return response.status(401).json({
+            status_code: 401,
+            error: 'token missing or invalid'
+        })
+    }
+
     const { id } = request.params
     const note = request.body
 
@@ -83,8 +143,17 @@ notesRouter.put('/:id', (request, response, next) => {
         content: note.content,
         important: note.important
     }
-    Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
-        .then(result => response.json(result))
+    try {
+        const noteUpdate = await Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
+        response.status(200).json({
+            status_code: 200,
+            note: noteUpdate
+        })
+    } catch (err) {
+        console.log("PUT failure", err)
+        next(err)
+    }
+
 })
 
 module.exports = notesRouter

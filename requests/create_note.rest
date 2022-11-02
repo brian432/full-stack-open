@@ -1,9 +1,9 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNhcmxvczEyMyIsImlkIjoiNjM1ZmRjNTgxM2VlNjU2YjliYTM0YWVjIiwiaWF0IjoxNjY3MjI3MDIzfQ.GvKhPQCXoX9MEp7IQDdduV8elGRRPCclRkrjFz4-zNg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkJyaWFuMTIzIiwiaWQiOiI2MzYxNWE4NDUyMzZiMmQzMDk2MTQwNjciLCJpYXQiOjE2NjczMjc0NDZ9.XtWRxe0v6Ae3RfwRM-HnCERHc0iuabFWsff04DQmR_k
 
 {
-    "content":"Primer nota",
+    "content":"dsadsdsadsa",
     "important":true,
-    "userId": "635ab7ae198ab82741247cb7"
+    "userId": "63615a845236b2d309614067"
 }

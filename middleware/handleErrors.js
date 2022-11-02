@@ -12,7 +12,6 @@ module.exports = (error, request, response, next) => {
             error: 'invalid token'
         })
     }
-    logger.error(error.message)
 
     next(error)
 }

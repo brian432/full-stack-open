@@ -11,5 +11,5 @@ mongoose.connect(connectionString)
     .catch(err => console.log("error en la conexion", err))
 
 process.on('uncaughtException', () => { //Desconectar el servidor al haber un error
-    mongoose.connection.disconnect()
+    mongoose.disconnect()
 })
